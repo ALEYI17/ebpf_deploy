@@ -1,7 +1,9 @@
 # Default values for ebpf-server.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-
+global:
+  allInOneLocalStorage: true
+  
 # This will set the replicaset count more information can be found here: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/
 replicaCount: 1
 
@@ -15,7 +17,7 @@ image:
 
 env:
   SERVER_PORT: "8080"
-  DB_ADDRESS: "localhost:9000"
+  DB_ADDRESS: "clickhouse:9000"
   DB_USER: "user"
   DB_PASSWORD: "password"
   DB_NAME: "audit"

@@ -46,7 +46,7 @@ spec:
             - name: SERVER_PORT
               value: {{ .Values.env.SERVER_PORT | quote }}
             - name: DB_ADDRESS
-              value: {{ .Values.env.DB_ADDRESS | quote }}
+              value: "{{.Release.Name}}-clickhouse:9000"
             - name: DB_USER
               value: {{ .Values.env.DB_USER | quote }}
             - name: DB_PASSWORD
