@@ -48,8 +48,8 @@ spec:
             - name: DB_ADDRESS
               value: "{{.Release.Name}}-clickhouse:9000"
             - name: DB_USER
-              value: {{ .Values.env.DB_USER | quote }}
+              value: {{ .Values.clickhouse.auth.username | quote }}
             - name: DB_PASSWORD
-              value: {{ .Values.env.DB_PASSWORD | quote }}
+              value: {{ .Values.clickhouse.auth.password | quote }}
             - name: DB_NAME
               value: {{ .Values.env.DB_NAME | quote }}

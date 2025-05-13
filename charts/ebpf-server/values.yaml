@@ -1,9 +1,7 @@
 # Default values for ebpf-server.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-global:
-  allInOneLocalStorage: true
-  
+ 
 # This will set the replicaset count more information can be found here: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/
 replicaCount: 1
 
@@ -66,3 +64,36 @@ service:
   port: 8080
 
 
+clickhouse:
+  initdbScripts:
+    my_init_script.sh: |
+      #!/bin/bash
+      echo "Initializing ClickHouse database as admin..."
+      clickhouse-client --user=admin --password=${CLICKHOUSE_ADMIN_PASSWORD} --query "
+        CREATE DATABASE IF NOT EXISTS audit;
+
+        CREATE TABLE IF NOT EXISTS audit.tracing_events (
+          pid UInt32,
+          uid UInt32,
+          gid UInt32,
+          ppid UInt32,
+          user_pid UInt32,
+          user_ppid UInt32,
+          cgroup_id UInt64,
+          cgroup_name String,
+          comm String,
+          filename String,
+          timestamp_ns UInt64,
+          timestamp_ns_exit UInt64,
+          return_code Int64,
+          latency_ns UInt64,
+          event_type String,
+          node_name String,
+          user String,
+          latency_ms Float64
+        ) ENGINE = MergeTree()
+        ORDER BY timestamp_ns;
+      "
+  auth: 
+    username: admin
+    password: password 

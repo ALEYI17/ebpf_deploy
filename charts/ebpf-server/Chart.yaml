@@ -25,5 +25,5 @@ appVersion: "latest"
 
 dependencies:
 - name: clickhouse
-  version: "0.1.0"
-  repository: "file://charts/clickhouse/"
+  version: "9.2.2"
+  repository: "oci://registry-1.docker.io/bitnamicharts"
