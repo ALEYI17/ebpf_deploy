@@ -52,6 +52,11 @@ spec:
             - name: tcp
               containerPort: 9000
               protocol: TCP
+          env:
+            - name: CLICKHOUSE_USER
+              value: {{.Values.enviroments.CLICKHOUSE_USER}}
+            - name: CLICKHOUSE_PASSWORD
+              value: {{.Values.enviroments.CLICKHOUSE_PASSWORD}}
           readinessProbe:
             tcpSocket:
               port: tcp
@@ -65,8 +70,6 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
-          - name: clickhouse-config
-            mountPath: /etc/clickhouse-server/
           - name: clickhouse-path
             mountPath: /var/lib/clickhouse/
           - name: clickhouse-storage-path
@@ -76,9 +79,6 @@ spec:
             mountPath: {{ .mountPath }}
         {{- end }}
       volumes:
-        - name: clickhouse-config
-          configMap:
-            name: {{ include "clickhouse.fullname" . }}-config
       {{- if eq ( tpl .Values.storageConfig.generateType . ) "hostPath" }}
         - name: clickhouse-path
           hostPath:
