@@ -1,0 +1,6 @@
+dependencies:
+- name: clickhouse
+  repository: file://charts/clickhouse/
+  version: 0.1.0
+digest: sha256:2016247fb9021e2b856850dab231e3d8efd196da3f8fb010cf1b4ed274ed1b55
+generated: "2025-05-12T18:35:38.613415205-05:00"

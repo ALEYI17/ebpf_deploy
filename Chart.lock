@@ -1,0 +1,6 @@
+dependencies:
+- name: ebpf-server
+  repository: file://charts/ebpf-server/
+  version: 0.1.0
+digest: sha256:f3539ccb86bd1f9c83bf27295eaed195b6fb355f12068fd7e23311820c35934c
+generated: "2025-05-12T18:31:49.505603721-05:00"

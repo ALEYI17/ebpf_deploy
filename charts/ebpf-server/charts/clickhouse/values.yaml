@@ -1,0 +1,116 @@
+global:
+  allInOneLocalStorage: true
+
+replicaCount: 1
+hostNetwork: "false"
+dnsPolicy: "ClusterFirst"
+podManagementPolicy: "OrderedReady"
+
+image:
+  repository: clickhouse/clickhouse-server
+  # This sets the pull policy for images.
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "25.4.2.31"
+
+imagePullSecrets: []
+# This is to override the chart name.
+nameOverride: ""
+fullnameOverride: ""
+
+podAnnotations: {}
+# This is for setting Kubernetes Labels to a Pod.
+# For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+podLabels: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+chmodContainer: 
+  enabled: true
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  ## Configuration for Clickhouse service
+  ##
+  annotations: {}
+  labels: {}
+  clusterIP: ""
+
+  ## Port for Clickhouse Service to listen on
+  ##
+
+  ports:
+    - name: http-port
+      port: 8123
+      targetPort: 8123
+      nodePort:
+      protocol: TCP
+    - name: tcp-port
+      port: 9000
+      targetPort: 9000
+      nodePort:
+      protocol: TCP
+    - name: interserver-http-port
+      port: 9009
+      targetPort: 9009
+      nodePort:
+      protocol: TCP
+
+  ## Additional ports to open for server service
+  additionalPorts: []
+
+  externalIPs: []
+  loadBalancerIP: ""
+  loadBalancerSourceRanges: []
+
+  ## Denotes if this Service desires to route external traffic to node-local or cluster-wide endpoints
+  ## must be Local
+  externalTrafficPolicy: Cluster
+
+  ## Service type
+  ##
+  type: ClusterIP
+
+storageConfig:
+  generateType: "{{ if $.Values.global.allInOneLocalStorage }}hostPath{{ else }}{{$.Values.storageConfig.type}}{{end}}"
+  type: persistentVolumeClaim
+  hostPath: /opt/deepflow-clickhouse
+  persistence:
+    - name: clickhouse-path
+      accessModes:
+        - ReadWriteOnce
+      size: 100Gi
+      annotations: 
+      storageClass: ""
+    - name: clickhouse-storage-path
+      accessModes:
+        - ReadWriteOnce
+      size: 200Gi
+      annotations: 
+      storageClass: ""
+
+clickhouse:
+  interserverHttpPort: 9009
+  maxConcurrentQueries: 2000
+  maxMemoryUsage: 10000000000
+  maxQuerySize: 10737418240
+  maxAstElements: 2000000
+  maxExpandedAstElements: 2000000
+  connectTimeout: 500
+  backgroudPoolSize: 32
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+enviroments:
+  CLICKHOUSE_USER: user
+  CLICKHOUSE_PASSWORD: password
