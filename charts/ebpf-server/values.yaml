@@ -118,6 +118,7 @@ clickhouse:
       dport String,                 
       saddr_ipv6 String,  
       daddr_ipv6 String,
+      resolved_domain Nullable(String),
       monotonic_ts_enter_ns UInt64,
       monotonic_ts_exit_ns UInt64,
       return_code Int64,
@@ -140,4 +141,4 @@ clickhouse:
   auth: 
     username: admin
     password: password 
-  replicaCount: 2
+  replicaCount: 1
