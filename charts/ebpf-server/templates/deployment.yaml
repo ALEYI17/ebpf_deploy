@@ -42,6 +42,9 @@ spec:
             - name: grpc
               containerPort: {{ .Values.service.port }}
               protocol: TCP
+            - name: metrics
+              containerPort: {{ .Values.env.PROMETHEUS_PORT}}
+              protocol: TCP
           env:
             - name: SERVER_PORT
               value: {{ .Values.env.SERVER_PORT | quote }}
@@ -53,3 +56,5 @@ spec:
               value: {{ .Values.clickhouse.auth.password | quote }}
             - name: DB_NAME
               value: {{ .Values.env.DB_NAME | quote }}
+            - name: PROMETHEUS_PORT
+              value: {{ .Values.env.PROMETHEUS_PORT | quote }}
