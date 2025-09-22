@@ -11,7 +11,7 @@ description: A Helm chart for deploying the ebpf_server
 # a dependency of application charts to inject those utilities and functions into the rendering
 # pipeline. Library charts do not define any templates and therefore cannot be deployed.
 type: application
-
+  
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
@@ -27,3 +27,9 @@ dependencies:
 - name: clickhouse
   version: "9.2.2"
   repository: "oci://registry-1.docker.io/bitnamicharts"
+- name: kafka
+  version: "32.4.3"   
+  repository: "oci://registry-1.docker.io/bitnamicharts"
+- name: kafka-ui
+  version:  1.5.2
+  repository: "https://kafbat.github.io/helm-charts"

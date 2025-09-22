@@ -68,6 +68,37 @@ service:
   # This sets the ports more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#field-spec-ports
   port: 8080
 
+kafka:
+  replicaCount: 1
+  listeners:
+    client:
+      protocol: "PLAINTEXT"
+  provisioning:
+    enabled: true
+    topics:
+      - name: resource
+        partitions: 3
+        replicationFactor: 1
+      - name: frequency
+        partitions: 3
+        replicationFactor: 1
+      - name: ebpf_events
+        partitions: 1
+        replicationFactor: 1
+
+kafka-ui:
+  yamlApplicationConfig:
+    kafka:
+      clusters:
+        - name: infrasight
+          bootstrapServers: infrasight-kafka-controller-headless:9092
+  auth:
+    type: disabled
+  management:
+    health:
+      ldap:
+        enabled: false
+
 
 clickhouse:
   initdbScripts:
