@@ -1,0 +1,15 @@
+{{- if .Values.enabled }}
+
+✅ infrasight-sentinel has been deployed.
+
+Environment configuration:
+  - KAFKA_BROKER = {{ default (printf "%s-kafka:9092" .Release.Name) .Values.env.KAFKA_BROKER }}
+  - KAFKA_TOPIC  = {{ .Values.env.KAFKA_TOPIC }}
+  - KAFKA_GROUPID = {{ .Values.env.KAFKA_GROUPID }}
+
+{{- else }}
+
+⚠️ infrasight-sentinel is disabled (`enable=false`), so nothing was deployed.
+
+{{- end }}
+

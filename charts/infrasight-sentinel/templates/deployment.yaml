@@ -1,0 +1,33 @@
+{{- if .Values.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "infrasight-sentinel.fullname" . }}
+  labels:
+    {{- include "infrasight-sentinel.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "infrasight-sentinel.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "infrasight-sentinel.labels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: KAFKA_BROKER
+              value:  {{ if .Values.env.KAFKA_BROKER | quote | ne "\"\"" -}}
+                        {{ .Values.env.KAFKA_BROKER | quote }}
+                      {{- else -}}
+                        "{{ .Release.Name }}-kafka:9092"
+                      {{- end }}
+            - name: KAFKA_TOPIC
+              value: {{ .Values.env.KAFKA_TOPIC | quote }}
+            - name: KAFKA_GROUPID
+              value: {{ .Values.env.KAFKA_GROUPID | quote }}
+{{- end }}
