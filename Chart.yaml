@@ -27,3 +27,12 @@ dependencies:
 - name: ebpf-server
   version: "0.1.0"
   repository: "file://charts/ebpf-server/"
+- name: infrasight-ml-resource-per-container
+  version: "0.1.0"
+  repository: "file://charts/infrasight-ml-resource-per-container"
+- name: infrasight-ml-syscall-per-container
+  version: "0.1.0"
+  repository: "file://charts/infrasight-ml-syscall-per-container"
+- name: infrasight-sentinel
+  version: "0.1.0"
+  repository: "file://charts/infrasight-sentinel"
