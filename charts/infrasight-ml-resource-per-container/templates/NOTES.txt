@@ -1,0 +1,16 @@
+{{- if .Values.enabled }}
+
+✅ infrasight-ml-resource-per-container has been deployed.
+
+Environment configuration:
+  - KAFKA_BROKER         = {{ default (printf "%s-kafka:9092" .Release.Name) .Values.env.KAFKA_BROKER }}
+  - KAFKA_TOPIC          = {{ .Values.env.KAFKA_TOPIC }}
+To check logs:
+  kubectl logs -n {{ .Release.Namespace }} -l app.kubernetes.io/name={{ include "infrasight-ml-resource-per-container.name" . }}
+
+{{- else }}
+
+⚠️ infrasight-ml-resource-per-container is disabled (`enable=false`), so nothing was deployed.
+
+{{- end }}
+

@@ -1,0 +1,44 @@
+{{- if .Values.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "infrasight-ml-resource-per-container.fullname" . }}
+  labels:
+    {{- include "infrasight-ml-resource-per-container.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "infrasight-ml-resource-per-container.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "infrasight-ml-resource-per-container.labels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: KAFKA_BROKER
+              value: {{ if .Values.env.KAFKA_BROKER | quote | ne "\"\"" -}}
+                       {{ .Values.env.KAFKA_BROKER | quote }}
+                     {{- else -}}
+                       "{{ .Release.Name }}-kafka:9092"
+                     {{- end }}
+            - name: KAFKA_TOPIC
+              value: {{ .Values.env.KAFKA_TOPIC | quote }}
+            - name: KAFKA_AUTO_OFFSET_RESET
+              value: {{ .Values.env.KAFKA_AUTO_OFFSET_RESET | quote }}
+            - name: ML_MODEL
+              value: {{ .Values.env.ML_MODEL | quote }}
+            - name: WARMUP_SIZE
+              value: {{ .Values.env.WARMUP_SIZE | quote }}
+            - name: WARMUP_TIME
+              value: {{ .Values.env.WARMUP_TIME | quote }}
+            - name: WARMUP_SIZE_PC
+              value: {{ .Values.env.WARMUP_SIZE_PC | quote }}
+            - name: LOG_LEVEL
+              value: {{ .Values.env.LOG_LEVEL | quote }}
+{{- end }}
+
