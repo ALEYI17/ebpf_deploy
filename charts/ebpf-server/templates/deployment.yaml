@@ -58,3 +58,5 @@ spec:
               value: {{ .Values.env.DB_NAME | quote }}
             - name: PROMETHEUS_PORT
               value: {{ .Values.env.PROMETHEUS_PORT | quote }}
+            - name: KAFKA_BROKERS
+              value: "{{ .Release.Name }}-kafka:9092"
