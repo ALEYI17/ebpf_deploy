@@ -32,3 +32,9 @@ env:
   KAFKA_BROKER: ""  # match your Kafka svc
   KAFKA_TOPIC: "ebpf_events"
   KAFKA_GROUPID: "rules-engine"
+
+rules:
+  mountPath: /workspace/rules
+  volume:
+    type: configMap   # can also be "secret" or "pvc"
+    name: my-custom-rules

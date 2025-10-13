@@ -30,4 +30,19 @@ spec:
               value: {{ .Values.env.KAFKA_TOPIC | quote }}
             - name: KAFKA_GROUPID
               value: {{ .Values.env.KAFKA_GROUPID | quote }}
+          volumeMounts:
+            - name: rules-volume
+              mountPath: {{ .Values.rules.mountPath }}
+      volumes:
+        - name: rules-volume
+          {{- if eq .Values.rules.volume.type "configMap" }}
+          configMap:
+            name: {{ .Values.rules.volume.name }}
+          {{- else if eq .Values.rules.volume.type "secret" }}
+          secret:
+            secretName: {{ .Values.rules.volume.name }}
+          {{- else if eq .Values.rules.volume.type "pvc" }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.rules.volume.name }}
+          {{- end }}
 {{- end }}
