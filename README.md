@@ -7,15 +7,22 @@ InfraSight is a distributed observability system built with **eBPF**, providing 
 This chart installs:
 
 - 🛰️ [`ebpf_server`](https://github.com/ALEYI17/ebpf_server): The gRPC backend that receives telemetry and inserts it into the database.
+- 🧠 [`InfraSight_sentinel`](https://github.com/ALEYI17/InfraSight_sentinel): Rules engine that analyzes and triggers alerts based on predefined logic.
+- 🤖 [`InfraSight_ml`](https://github.com/ALEYI17/InfraSight_ml): Machine learning microservices for anomaly detection (e.g., per-container resource and syscall models).
 - 🛢️ ClickHouse: High-performance columnar database used to store eBPF event data.
+- 📡 Kafka: Message broker for event streaming between components.
 
 ## 📦 Helm Chart Overview
 
 The Helm chart deploys:
-
-- A standalone `ebpf-server` Deployment, along with its ConfigMap, Service, and Secret templates
-- A full ClickHouse instance using the **Bitnami** Helm chart (`oci://registry-1.docker.io/bitnamicharts`)
-- Kubernetes-native configuration to support both development and production deployments
+- A standalone `ebpf-server` Deployment, along with its ConfigMap, Service, and Secret templates.
+- A full **ClickHouse** instance using the **Bitnami** Helm chart.
+- An optional **Kafka** broker.
+- The **Sentinel** rule engine with configurable rules via ConfigMap.
+- **ML microservices** for real-time anomaly detection:
+  - `infrasight-ml-resource-per-container`
+  - `infrasight-ml-syscall-per-container`
+- Kubernetes-native configuration supporting both development and production deployments.
 
 ## 📌 Status
 
@@ -42,10 +49,29 @@ helm dependency update  # fetch Bitnami ClickHouse chart
 helm install infrasight .  # deploy with release name "infrasight"
 ````
 
-This will install:
+## ⚖️ Managing Sentinel Rules
 
-* `ebpf-server` listening on its configured gRPC port (default: `8080`)
-* A ClickHouse instance with default user and password
+The [`InfraSight_sentinel`](https://github.com/ALEYI17/InfraSight_sentinel) component loads its detection rules from a **ConfigMap**.
+You can create your own rule set and reference it in the Helm release.
+
+1. Create a ConfigMap from your rule files:
+
+```bash
+kubectl create configmap my-custom-rules --from-file=./rules/
+```
+
+2. During Helm installation, pass the name of your ConfigMap:
+
+```bash
+helm install infrasight . \
+  --set infrasight-sentinel.rules.volume.name=my-custom-rules
+```
+
+3. The Sentinel deployment will mount these rules automatically at runtime.
+
+> 💡 Place all your `.yaml` rule definitions in the `./rules/` directory before creating the ConfigMap.
+
+
 
 ## 📥 Chart Dependencies
 
@@ -55,6 +81,9 @@ This chart depends on the official Bitnami ClickHouse chart:
 dependencies:
   - name: clickhouse
     version: "9.2.2"
+    repository: "oci://registry-1.docker.io/bitnamicharts"
+  - name: kafka
+    version: "32.4.3"
     repository: "oci://registry-1.docker.io/bitnamicharts"
 ```
 ## 📚 Related Repositories
